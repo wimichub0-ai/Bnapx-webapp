@@ -1,1 +1,31 @@
-<!DOCTYPE html><html><head><title>BnapX</title></head><body><h1>BnapX App</h1></body></html>
+<!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BnapX • Flutterwave Test</title>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:24px}
+  input,button{height:44px;border-radius:10px;border:1px solid #e6ebf4;padding:0 12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+</style>
+<h2>Flutterwave Standard Checkout (Test)</h2>
+<div class="row">
+  <input id="amt" type="number" placeholder="Amount e.g. 5000" />
+  <input id="email" type="email" placeholder="Email e.g. test@example.com" />
+  <input id="name" placeholder="Name e.g. Michael Muta" />
+  <button onclick="pay()">Create Payment</button>
+</div>
+<p id="info"></p>
+<script>
+async function pay(){
+  const amount = Number(document.getElementById('amt').value || 0);
+  const email = document.getElementById('email').value || 'test@example.com';
+  const name = document.getElementById('name').value || 'BnapX Tester';
+  const res = await fetch('/api/payments/create', {
+    method:'POST',
+    headers:{'content-type':'application/json'},
+    body: JSON.stringify({ amount, currency:'NGN', email, name })
+  });
+  const data = await res.json();
+  if(data.link){ document.getElementById('info').innerHTML = 'Opening checkout...'; location.href = data.link; }
+  else{ document.getElementById('info').textContent = JSON.stringify(data); }
+}
+</script>
